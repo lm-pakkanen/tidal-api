@@ -1,7 +1,8 @@
 package io.github.lm_pakkanen.tidal_api;
 
-import io.github.lm_pakkanen.tidal_api.endpoint_controllers.Authorization;
-import io.github.lm_pakkanen.tidal_api.models.Credentials;
+import io.github.lm_pakkanen.tidal_api.endpoint_controllers.AuthorizationController;
+import io.github.lm_pakkanen.tidal_api.endpoint_controllers.TracksController;
+import io.github.lm_pakkanen.tidal_api.models.entities.Credentials;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.InvalidCredentialsException;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.UnauthorizedException;
 
@@ -12,10 +13,15 @@ public final class TidalApi {
 
   private Credentials credentials;
 
+  private final AuthorizationController authorizationController;
+  public final TracksController tracks;
+
   /**
    * Constructor for the Tidal API.
    */
   public TidalApi() {
+    this.authorizationController = new AuthorizationController();
+    this.tracks = new TracksController();
   }
 
   /**
@@ -27,8 +33,7 @@ public final class TidalApi {
    * @param clientId     client id.
    * @param clientSecret client secret.
    * 
-   * @return authorized credentials. These are not needed for anything while using
-   *         this package.
+   * @return authorized credentials.
    * 
    * @throws InvalidCredentialsException if provided credentials are null or
    *                                     empty.
@@ -49,8 +54,7 @@ public final class TidalApi {
    * @param clientSecret client secret.
    * @param force        force re-authorization.
    * 
-   * @return authorized credentials. These are not needed for anything while using
-   *         this package.
+   * @return authorized credentials.
    * 
    * @throws InvalidCredentialsException if provided credentials are null or
    *                                     empty.
@@ -69,7 +73,7 @@ public final class TidalApi {
       }
     }
 
-    this.credentials = Authorization.authorize(clientId, clientSecret);
+    this.credentials = this.authorizationController.authorize(clientId, clientSecret);
     return this.credentials;
   }
 
