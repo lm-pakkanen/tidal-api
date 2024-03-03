@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 
 import com.fasterxml.jackson.jr.ob.JSON;
 
@@ -36,9 +37,7 @@ public class BaseQuery {
   private Credentials credentials;
   private Object body;
 
-  private String countryCode;
-  private Integer limit;
-  private Integer skip;
+  private final HashMap<String, Object> queryParameters;
 
   public static enum HttpMethod {
     GET, POST, PUT, DELETE
@@ -61,6 +60,7 @@ public class BaseQuery {
    */
   public BaseQuery() {
     this.httpMethod = BaseQuery.HttpMethod.GET;
+    this.queryParameters = new HashMap<>();
   }
 
   /**
@@ -208,8 +208,7 @@ public class BaseQuery {
       throw new QueryException("Query is already built.");
     }
 
-    this.limit = limit;
-    return this;
+    return this.parameter("offset", limit);
   }
 
   /**
@@ -226,25 +225,18 @@ public class BaseQuery {
       throw new QueryException("Query is already built.");
     }
 
-    this.skip = skip;
-    return this;
+    return this.parameter("skip", skip);
   }
 
   /**
-   * Sets the country code for the query.
-   *
-   * @param countryCode the country code to set.
+   * Sets a query parameter for the query.
    * 
+   * @param key   the key of the query parameter.
+   * @param value the value of the query parameter.
    * @return the updated BaseQuery object.
-   * 
-   * @throws QueryException if the query is already built.
    */
-  protected BaseQuery countryCode(String countryCode) throws QueryException {
-    if (this.connection != null) {
-      throw new QueryException("Query is already built.");
-    }
-
-    this.countryCode = countryCode;
+  protected BaseQuery parameter(String key, Object value) {
+    this.queryParameters.put(key, value);
     return this;
   }
 
@@ -266,19 +258,7 @@ public class BaseQuery {
 
     try {
       final StringBuilder urlBuilder = new StringBuilder(url);
-
-      if (this.skip != null) {
-        BaseQuery.addQueryParameter(urlBuilder, "offset", this.skip);
-      }
-
-      if (this.limit != null) {
-        BaseQuery.addQueryParameter(urlBuilder, "limit", this.limit);
-      }
-
-      if (this.countryCode != null) {
-        BaseQuery.addQueryParameter(urlBuilder, "countryCode", this.countryCode);
-      }
-
+      this.queryParameters.forEach((key, value) -> BaseQuery.addQueryParameter(urlBuilder, key, value));
       final String finalUrl = urlBuilder.toString();
 
       this.connection = (HttpURLConnection) new URI(finalUrl).toURL().openConnection();
@@ -323,7 +303,7 @@ public class BaseQuery {
       }
 
       return this.connection;
-    } catch (URISyntaxException | IOException exception) {
+    } catch (URISyntaxException | IOException | QueryException exception) {
       try {
         if (this.connection != null) {
           this.connection.disconnect();
@@ -338,6 +318,10 @@ public class BaseQuery {
         }
       } catch (IOException cleanupException) {
         // no-op
+      }
+
+      if (exception instanceof QueryException) {
+        throw new QueryException((QueryException) exception);
       }
 
       throw new QueryException(exception);

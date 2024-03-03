@@ -3,9 +3,13 @@ package io.github.lm_pakkanen.tidal_api.models.queries;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
+import java.util.LinkedHashMap;
 
 import com.fasterxml.jackson.jr.ob.JSON;
+import com.fasterxml.jackson.jr.ob.impl.DeferredMap;
 
 import io.github.lm_pakkanen.tidal_api.models.entities.Credentials;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.QueryException;
@@ -70,10 +74,10 @@ public class Query extends BaseQuery {
   }
 
   /**
-   * @see BaseQuery#query(String, String)
+   * @see BaseQuery#parameter(String, String)
    */
-  public Query countryCode(String countryCode) throws QueryException {
-    super.countryCode(countryCode);
+  public Query parameter(String key, String value) throws QueryException {
+    super.parameter(key, value);
     return this;
   }
 
@@ -122,7 +126,11 @@ public class Query extends BaseQuery {
       final T entity = JSON.std.beanFrom(toBean, response);
 
       return entity;
-    } catch (QueryException | IOException exception) {
+    } catch (IOException | QueryException exception) {
+      if (exception instanceof QueryException) {
+        throw new QueryException((QueryException) exception);
+      }
+
       throw new QueryException(exception);
     } finally {
       try {

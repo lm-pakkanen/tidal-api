@@ -1,7 +1,7 @@
 package io.github.lm_pakkanen.tidal_api;
 
-import io.github.lm_pakkanen.tidal_api.endpoint_controllers.AuthorizationController;
-import io.github.lm_pakkanen.tidal_api.endpoint_controllers.TracksController;
+import io.github.lm_pakkanen.tidal_api.controllers.endpoints.AuthorizationController;
+import io.github.lm_pakkanen.tidal_api.controllers.endpoints.TracksController;
 import io.github.lm_pakkanen.tidal_api.models.entities.Credentials;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.InvalidCredentialsException;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.UnauthorizedException;

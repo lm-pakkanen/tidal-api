@@ -36,7 +36,7 @@ public final class QueryException extends Exception {
    *
    * @param exception the exception to get the error message from.
    */
-  public QueryException(Throwable exception) {
+  public QueryException(Exception exception) {
     super("Query failure: " + exception.getMessage());
   }
 }

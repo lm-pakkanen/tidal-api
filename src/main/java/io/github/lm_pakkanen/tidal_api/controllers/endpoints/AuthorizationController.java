@@ -1,4 +1,4 @@
-package io.github.lm_pakkanen.tidal_api.endpoint_controllers;
+package io.github.lm_pakkanen.tidal_api.controllers.endpoints;
 
 import java.util.Base64;
 

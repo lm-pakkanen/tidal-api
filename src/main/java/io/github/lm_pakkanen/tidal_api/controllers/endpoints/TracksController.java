@@ -1,10 +1,11 @@
-package io.github.lm_pakkanen.tidal_api.endpoint_controllers;
+package io.github.lm_pakkanen.tidal_api.controllers.endpoints;
 
 import io.github.lm_pakkanen.tidal_api.models.entities.Credentials;
 import io.github.lm_pakkanen.tidal_api.models.entities.Track;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.QueryException;
 import io.github.lm_pakkanen.tidal_api.models.queries.BaseQuery;
 import io.github.lm_pakkanen.tidal_api.models.queries.Query;
+import io.github.lm_pakkanen.tidal_api.models.tidal_responses.TidalTrackResponse;
 
 public final class TracksController extends BaseEndpointController {
 
@@ -24,9 +25,10 @@ public final class TracksController extends BaseEndpointController {
     final Query query = new Query(trackUrl)
         .contentType(BaseQuery.ContentType.TIDAL_JSON)
         .auth(credentials)
-        .countryCode("US");
+        .parameter("countryCode", "FI");
 
-    final Track track = query.execute(Track.class);
-    return track;
+    final TidalTrackResponse tidalTrack = query.execute(TidalTrackResponse.class);
+
+    return new Track(tidalTrack);
   }
 }
