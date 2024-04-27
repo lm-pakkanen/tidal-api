@@ -12,7 +12,9 @@ import java.util.HashMap;
 
 import com.fasterxml.jackson.jr.ob.JSON;
 
+import io.github.lm_pakkanen.tidal_api.controllers.endpoints.AuthorizationController;
 import io.github.lm_pakkanen.tidal_api.models.entities.Credentials;
+import io.github.lm_pakkanen.tidal_api.models.exceptions.InvalidCredentialsException;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.QueryException;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.UnauthorizedException;
 
@@ -27,17 +29,14 @@ import io.github.lm_pakkanen.tidal_api.models.exceptions.UnauthorizedException;
 public class BaseQuery {
   protected HttpURLConnection connection;
 
-  private OutputStream outputStream;
-  private OutputStreamWriter outputStreamWriter;
+  protected BaseQuery.HttpMethod httpMethod;
+  protected BaseQuery.ContentType contentType;
 
-  private BaseQuery.HttpMethod httpMethod;
-  private BaseQuery.ContentType contentType;
+  protected String basicCredentialsBase64;
+  protected Credentials credentials;
+  protected Object body;
 
-  private String basicCredentialsBase64;
-  private Credentials credentials;
-  private Object body;
-
-  private final HashMap<String, Object> queryParameters;
+  protected final HashMap<String, Object> queryParameters;
 
   public static enum HttpMethod {
     GET, POST, PUT, DELETE
@@ -64,6 +63,25 @@ public class BaseQuery {
   }
 
   /**
+   * Tries to get the credentials from the store. If the credentials don't exist
+   * or are invalid/expired, throws an exception.
+   * 
+   * This is a wrapper around AuthorizationController.tryGetCredentials() that
+   * throws a QueryException instead of an InvalidCredentialsException or an
+   * UnauthorizedException.
+   * 
+   * @return credentials.
+   * @throws QueryException if the credentials don't exist or are invalid/expired.
+   */
+  public static Credentials tryGetCredentialsOrQueryException() throws QueryException {
+    try {
+      return AuthorizationController.tryGetCredentials();
+    } catch (InvalidCredentialsException | UnauthorizedException exception) {
+      throw new QueryException(exception);
+    }
+  }
+
+  /**
    * Converts the response from the Tidal API to a string.
    * 
    * Utilizes the input stream reader and buffer reader from the parent class.
@@ -76,10 +94,10 @@ public class BaseQuery {
    * 
    * @throws IOException
    */
-  public static String responseToString(InputStreamReader inputStreamReader, BufferedReader bufferedReader,
+  public static String responseToString(
       HttpURLConnection connection) throws IOException {
-    inputStreamReader = new InputStreamReader(connection.getInputStream());
-    bufferedReader = new BufferedReader(inputStreamReader);
+    final InputStreamReader inputStreamReader = new InputStreamReader(connection.getInputStream());
+    final BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
     final StringBuilder responseBuilder = new StringBuilder();
 
@@ -195,47 +213,17 @@ public class BaseQuery {
   }
 
   /**
-   * Sets the item count limit for the query.
-   *
-   * @param limit the maximum number of results to be returned.
-   * 
-   * @return the updated BaseQuery object.
-   * 
-   * @throws QueryException if the query is already built.
-   */
-  protected BaseQuery limit(int limit) throws QueryException {
-    if (this.connection != null) {
-      throw new QueryException("Query is already built.");
-    }
-
-    return this.parameter("offset", limit);
-  }
-
-  /**
-   * Sets the number of items to skip in the query result.
-   *
-   * @param skip the number of items to skip.
-   * 
-   * @return the updated BaseQuery object.
-   * 
-   * @throws QueryException if the query is already built.
-   */
-  protected BaseQuery skip(int skip) throws QueryException {
-    if (this.connection != null) {
-      throw new QueryException("Query is already built.");
-    }
-
-    return this.parameter("skip", skip);
-  }
-
-  /**
    * Sets a query parameter for the query.
    * 
    * @param key   the key of the query parameter.
    * @param value the value of the query parameter.
    * @return the updated BaseQuery object.
    */
-  protected BaseQuery parameter(String key, Object value) {
+  protected BaseQuery parameter(String key, Object value) throws QueryException {
+    if (this.connection != null) {
+      throw new QueryException("Query is already built.");
+    }
+
     this.queryParameters.put(key, value);
     return this;
   }
@@ -255,6 +243,9 @@ public class BaseQuery {
     if (this.connection != null) {
       throw new QueryException("Query is already built.");
     }
+
+    OutputStream outputStream = null;
+    OutputStreamWriter outputStreamWriter = null;
 
     try {
       final StringBuilder urlBuilder = new StringBuilder(url);
@@ -285,8 +276,8 @@ public class BaseQuery {
 
         this.connection.setDoOutput(true);
 
-        this.outputStream = connection.getOutputStream();
-        this.outputStreamWriter = new OutputStreamWriter(outputStream, "UTF-8");
+        outputStream = connection.getOutputStream();
+        outputStreamWriter = new OutputStreamWriter(outputStream, "UTF-8");
 
         String bodyAsString;
 
@@ -296,10 +287,9 @@ public class BaseQuery {
           bodyAsString = JSON.std.asString(this.body);
         }
 
-        this.outputStreamWriter.write(bodyAsString);
-
-        this.outputStreamWriter.close();
-        this.outputStream.close();
+        outputStreamWriter.write(bodyAsString);
+        outputStreamWriter.close();
+        outputStream.close();
       }
 
       return this.connection;
@@ -309,12 +299,12 @@ public class BaseQuery {
           this.connection.disconnect();
         }
 
-        if (this.outputStreamWriter != null) {
-          this.outputStreamWriter.close();
+        if (outputStreamWriter != null) {
+          outputStreamWriter.close();
         }
 
-        if (this.outputStream != null) {
-          this.outputStream.close();
+        if (outputStream != null) {
+          outputStream.close();
         }
       } catch (IOException cleanupException) {
         // no-op

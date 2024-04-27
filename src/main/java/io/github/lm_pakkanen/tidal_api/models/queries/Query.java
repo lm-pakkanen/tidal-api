@@ -1,16 +1,8 @@
 package io.github.lm_pakkanen.tidal_api.models.queries;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
-import java.util.LinkedHashMap;
-
 import com.fasterxml.jackson.jr.ob.JSON;
-import com.fasterxml.jackson.jr.ob.impl.DeferredMap;
-
 import io.github.lm_pakkanen.tidal_api.models.entities.Credentials;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.QueryException;
 
@@ -112,9 +104,6 @@ public class Query extends BaseQuery {
   public <T> T execute(Class<T> toBean) throws QueryException {
     final HttpURLConnection connection = super.build(url);
 
-    InputStreamReader inputStreamReader = null;
-    BufferedReader bufferedReader = null;
-
     try {
       int statusCode = connection.getResponseCode();
 
@@ -122,7 +111,7 @@ public class Query extends BaseQuery {
         throw new QueryException("Request failed with status code " + statusCode);
       }
 
-      final String response = BaseQuery.responseToString(inputStreamReader, bufferedReader, connection);
+      final String response = BaseQuery.responseToString(connection);
       final T entity = JSON.std.beanFrom(toBean, response);
 
       return entity;
@@ -132,18 +121,6 @@ public class Query extends BaseQuery {
       }
 
       throw new QueryException(exception);
-    } finally {
-      try {
-        if (inputStreamReader != null) {
-          inputStreamReader.close();
-        }
-
-        if (bufferedReader != null) {
-          bufferedReader.close();
-        }
-      } catch (IOException exception) {
-        // no-op
-      }
     }
   }
 }

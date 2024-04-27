@@ -2,6 +2,7 @@ package io.github.lm_pakkanen.tidal_api;
 
 import io.github.lm_pakkanen.tidal_api.controllers.endpoints.AuthorizationController;
 import io.github.lm_pakkanen.tidal_api.controllers.endpoints.TracksController;
+import io.github.lm_pakkanen.tidal_api.models.CredentialsStore;
 import io.github.lm_pakkanen.tidal_api.models.entities.Credentials;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.InvalidCredentialsException;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.UnauthorizedException;
@@ -11,8 +12,7 @@ import io.github.lm_pakkanen.tidal_api.models.exceptions.UnauthorizedException;
  */
 public final class TidalApi {
 
-  private Credentials credentials;
-
+  private final CredentialsStore credentialsStore;
   private final AuthorizationController authorizationController;
   public final TracksController tracks;
 
@@ -20,6 +20,7 @@ public final class TidalApi {
    * Constructor for the Tidal API.
    */
   public TidalApi() {
+    this.credentialsStore = CredentialsStore.getInstance();
     this.authorizationController = new AuthorizationController();
     this.tracks = new TracksController();
   }
@@ -33,16 +34,15 @@ public final class TidalApi {
    * @param clientId     client id.
    * @param clientSecret client secret.
    * 
-   * @return authorized credentials.
    * 
    * @throws InvalidCredentialsException if provided credentials are null or
    *                                     empty.
    * @throws UnauthorizedException       if provided credentials are null or
    *                                     empty.
    */
-  public Credentials authorize(String clientId, String clientSecret)
+  public void authorize(String clientId, String clientSecret)
       throws InvalidCredentialsException, UnauthorizedException {
-    return this.authorize(clientId, clientSecret, false);
+    this.authorize(clientId, clientSecret, false);
   }
 
   /**
@@ -54,27 +54,27 @@ public final class TidalApi {
    * @param clientSecret client secret.
    * @param force        force re-authorization.
    * 
-   * @return authorized credentials.
-   * 
    * @throws InvalidCredentialsException if provided credentials are null or
    *                                     empty.
    * @throws UnauthorizedException       if provided credentials are null or
    *                                     empty.
    */
-  public Credentials authorize(String clientId, String clientSecret, boolean force)
+  public void authorize(String clientId, String clientSecret, boolean force)
       throws InvalidCredentialsException, UnauthorizedException {
-    if (!force && this.credentials != null) {
-      long refreshThresholdSeconds = 60 * 60L; // 1hr
-      long credentialsExpireInSeconds = this.credentials.getExpiresInSeconds();
+    final Credentials currentCredentials = AuthorizationController.getCredentialsOrNull();
 
-      // Credentials still valid, don't refresh
-      if (credentialsExpireInSeconds > refreshThresholdSeconds) {
-        return this.credentials;
-      }
+    if (currentCredentials == null || force) {
+      credentialsStore.setCredentials(this.authorizationController.authorize(clientId, clientSecret));
+      return;
     }
 
-    this.credentials = this.authorizationController.authorize(clientId, clientSecret);
-    return this.credentials;
+    final long refreshThresholdSeconds = 60 * 60L; // 1hr
+    final long credentialsExpireInSeconds = currentCredentials.getExpiresInSeconds();
+
+    if (credentialsExpireInSeconds <= refreshThresholdSeconds) {
+      // Credentials expire within 1 hour, refresh
+      credentialsStore.setCredentials(this.authorizationController.authorize(clientId, clientSecret));
+    }
   }
 
   /**
@@ -82,7 +82,7 @@ public final class TidalApi {
    * credentials.
    */
   public void forgetCredentials() {
-    this.credentials = null;
+    this.credentialsStore.setCredentials(null);
   }
 
   /**

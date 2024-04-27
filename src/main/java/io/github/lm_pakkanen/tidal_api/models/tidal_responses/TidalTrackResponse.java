@@ -1,5 +1,8 @@
 package io.github.lm_pakkanen.tidal_api.models.tidal_responses;
 
+import java.util.List;
+
+import io.github.lm_pakkanen.tidal_api.interfaces.TidalListResponse;
 import io.github.lm_pakkanen.tidal_api.models.tidal_responses.components.TidalSimpleAlbum;
 import io.github.lm_pakkanen.tidal_api.models.tidal_responses.components.TidalSimpleArtist;
 
@@ -20,7 +23,6 @@ public class TidalTrackResponse {
     public TidalTrackResponse.MediaMetadata mediaMetadata;
     public TidalTrackResponse.Properties properties;
     public String tidalUrl;
-
   }
 
   public static class MediaMetadata {
@@ -29,5 +31,13 @@ public class TidalTrackResponse {
 
   public static class Properties {
     public String[] content;
+  }
+
+  public static class ListResponse implements TidalListResponse<TidalTrackResponse> {
+    public List<TidalTrackResponse> data;
+
+    public List<TidalTrackResponse> getData() {
+      return data;
+    }
   }
 }
