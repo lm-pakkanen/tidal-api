@@ -3,6 +3,7 @@ package io.github.lm_pakkanen.tidal_api;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,15 +16,19 @@ import io.github.lm_pakkanen.tidal_api.models.CredentialsStore;
 import io.github.lm_pakkanen.tidal_api.models.entities.Credentials;
 
 public final class TidalApiAuthorizationTest {
-  final Configuration config = Configuration.getInstance();
-  final String testClientId = config.__getTestClientId();
-  final String testClientSecret = config.__getTestClientSecret();
+  private final static Configuration CONFIG = Configuration.getInstance();
+  private final static String TEST_CLIENT_ID = TidalApiAuthorizationTest.CONFIG.__getTestClientId();
+  private final static String TEST_CLIENT_SECRET = TidalApiAuthorizationTest.CONFIG.__getTestClientSecret();
 
   @Test
   void testAuthorize() throws Exception {
     CredentialsStore.destroyInstance();
     final TidalApi api = new TidalApi();
-    assertDoesNotThrow(() -> api.authorize(testClientId, testClientSecret));
+
+    assertDoesNotThrow(
+        () -> {
+          api.authorize(TidalApiAuthorizationTest.TEST_CLIENT_ID, TidalApiAuthorizationTest.TEST_CLIENT_SECRET);
+        });
 
     final Credentials credentials = TidalApiAuthorizationTest.getCredentials(api);
     assertCredentialsValid(credentials);
@@ -34,11 +39,11 @@ public final class TidalApiAuthorizationTest {
     CredentialsStore.destroyInstance();
     final TidalApi api = new TidalApi();
 
-    api.authorize(testClientId, testClientSecret);
+    api.authorize(TidalApiAuthorizationTest.TEST_CLIENT_ID, TidalApiAuthorizationTest.TEST_CLIENT_SECRET);
     final Credentials credentials = TidalApiAuthorizationTest.getCredentials(api);
     assertCredentialsValid(credentials);
 
-    api.authorize(testClientId, testClientSecret);
+    api.authorize(TidalApiAuthorizationTest.TEST_CLIENT_ID, TidalApiAuthorizationTest.TEST_CLIENT_SECRET);
     final Credentials credentials2 = TidalApiAuthorizationTest.getCredentials(api);
     assertCredentialsValid(credentials2);
 
@@ -50,11 +55,11 @@ public final class TidalApiAuthorizationTest {
     CredentialsStore.destroyInstance();
     final TidalApi api = new TidalApi();
 
-    api.authorize(testClientId, testClientSecret);
+    api.authorize(TidalApiAuthorizationTest.TEST_CLIENT_ID, TidalApiAuthorizationTest.TEST_CLIENT_SECRET);
     final Credentials credentials = TidalApiAuthorizationTest.getCredentials(api);
     assertCredentialsValid(credentials);
 
-    api.authorize(testClientId, testClientSecret, true);
+    api.authorize(TidalApiAuthorizationTest.TEST_CLIENT_ID, TidalApiAuthorizationTest.TEST_CLIENT_SECRET, true);
     final Credentials credentials2 = TidalApiAuthorizationTest.getCredentials(api);
     assertCredentialsValid(credentials2);
 
@@ -62,7 +67,7 @@ public final class TidalApiAuthorizationTest {
   }
 
   private static void assertCredentialsValid(Credentials credentials) {
-    assertNotNull(credentials);
+    assertInstanceOf(Credentials.class, credentials);
 
     final String accessToken = credentials.getAccessToken();
     final long expiresInSeconds = credentials.getExpiresInSeconds();
