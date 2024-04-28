@@ -1,11 +1,11 @@
 package io.github.lm_pakkanen.tidal_api.models.entities;
 
-import io.github.lm_pakkanen.tidal_api.models.tidal_responses.TidalAuthorizationResponse;
+import io.github.lm_pakkanen.tidal_api.models.tidal_responses.AuthorizationResponse;
 
 /**
  * Credentials for the Tidal API.
  */
-public final class Credentials {
+public final class TidalCredentials {
   private String accessToken;
   private int expirationTimeSeconds;
   private long issuedAtUnix;
@@ -15,7 +15,7 @@ public final class Credentials {
    * 
    * @param response the response from the Tidal API.
    */
-  public Credentials(TidalAuthorizationResponse response) {
+  public TidalCredentials(AuthorizationResponse response) {
     this.accessToken = response.access_token;
     this.expirationTimeSeconds = response.expires_in;
     this.issuedAtUnix = System.currentTimeMillis();

@@ -13,7 +13,7 @@ import java.util.HashMap;
 import com.fasterxml.jackson.jr.ob.JSON;
 
 import io.github.lm_pakkanen.tidal_api.controllers.endpoints.AuthorizationController;
-import io.github.lm_pakkanen.tidal_api.models.entities.Credentials;
+import io.github.lm_pakkanen.tidal_api.models.entities.TidalCredentials;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.InvalidCredentialsException;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.QueryException;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.UnauthorizedException;
@@ -33,7 +33,7 @@ public class BaseQuery {
   protected BaseQuery.ContentType contentType;
 
   protected String basicCredentialsBase64;
-  protected Credentials credentials;
+  protected TidalCredentials credentials;
   protected Object body;
 
   protected final HashMap<String, Object> queryParameters;
@@ -73,7 +73,7 @@ public class BaseQuery {
    * @return credentials.
    * @throws QueryException if the credentials don't exist or are invalid/expired.
    */
-  public static Credentials tryGetCredentialsOrQueryException() throws QueryException {
+  public static TidalCredentials tryGetCredentialsOrQueryException() throws QueryException {
     try {
       return AuthorizationController.tryGetCredentials();
     } catch (InvalidCredentialsException | UnauthorizedException exception) {
@@ -156,7 +156,7 @@ public class BaseQuery {
    * @throws QueryException if the query is already built or if the credentials
    *                        are invalid.
    */
-  protected BaseQuery auth(Credentials credentials) throws QueryException {
+  protected BaseQuery auth(TidalCredentials credentials) throws QueryException {
     if (this.connection != null) {
       throw new QueryException("Query is already built.");
     }

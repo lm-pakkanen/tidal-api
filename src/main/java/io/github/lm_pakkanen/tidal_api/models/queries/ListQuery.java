@@ -8,7 +8,7 @@ import com.fasterxml.jackson.jr.ob.JSON;
 
 import io.github.lm_pakkanen.tidal_api.interfaces.TidalListResponse;
 import io.github.lm_pakkanen.tidal_api.models.ListQueryResult;
-import io.github.lm_pakkanen.tidal_api.models.entities.Credentials;
+import io.github.lm_pakkanen.tidal_api.models.entities.TidalCredentials;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.QueryException;
 
 /**
@@ -50,9 +50,9 @@ public class ListQuery extends BaseQuery {
   }
 
   /**
-   * @see BaseQuery#auth(Credentials)
+   * @see BaseQuery#auth(TidalCredentials)
    */
-  public ListQuery auth(Credentials credentials) throws QueryException {
+  public ListQuery auth(TidalCredentials credentials) throws QueryException {
     super.auth(credentials);
     return this;
   }

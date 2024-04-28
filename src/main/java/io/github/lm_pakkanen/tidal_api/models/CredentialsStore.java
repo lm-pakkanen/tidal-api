@@ -1,11 +1,11 @@
 package io.github.lm_pakkanen.tidal_api.models;
 
-import io.github.lm_pakkanen.tidal_api.models.entities.Credentials;
+import io.github.lm_pakkanen.tidal_api.models.entities.TidalCredentials;
 
 public final class CredentialsStore {
   private static CredentialsStore INSTANCE;
 
-  private Credentials credentials;
+  private TidalCredentials credentials;
 
   private CredentialsStore() {
   }
@@ -22,11 +22,11 @@ public final class CredentialsStore {
     CredentialsStore.INSTANCE = null;
   }
 
-  public void setCredentials(Credentials credentials) {
+  public void setCredentials(TidalCredentials credentials) {
     this.credentials = credentials;
   }
 
-  public Credentials getCredentials() {
+  public TidalCredentials getCredentials() {
     return this.credentials;
   }
 }

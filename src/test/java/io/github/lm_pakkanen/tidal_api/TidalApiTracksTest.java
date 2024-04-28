@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-import io.github.lm_pakkanen.tidal_api.models.entities.SimpleAlbum;
-import io.github.lm_pakkanen.tidal_api.models.entities.SimpleArtist;
-import io.github.lm_pakkanen.tidal_api.models.entities.Track;
+import io.github.lm_pakkanen.tidal_api.models.entities.TidalSimpleAlbum;
+import io.github.lm_pakkanen.tidal_api.models.entities.TidalSimpleArtist;
+import io.github.lm_pakkanen.tidal_api.models.entities.TidalTrack;
 
 public final class TidalApiTracksTest {
   private final static Configuration CONFIG = Configuration.getInstance();
@@ -24,7 +24,7 @@ public final class TidalApiTracksTest {
     final TidalApi api = new TidalApi();
     api.authorize(TidalApiTracksTest.TEST_CLIENT_ID, TidalApiTracksTest.TEST_CLIENT_SECRET);
 
-    final Track[] tracks = api.tracks.list(new String[] { TEST_TRACK_ID }, TEST_COUNTRY_CODE);
+    final TidalTrack[] tracks = api.tracks.list(new String[] { TEST_TRACK_ID }, TEST_COUNTRY_CODE);
     assertTracksValid(tracks);
   }
 
@@ -34,7 +34,7 @@ public final class TidalApiTracksTest {
     final TidalApi api = new TidalApi();
     api.authorize(TidalApiTracksTest.TEST_CLIENT_ID, TidalApiTracksTest.TEST_CLIENT_SECRET);
 
-    final Track[] tracks = api.tracks.listByArtist(TEST_ARTIST_ID, TEST_COUNTRY_CODE);
+    final TidalTrack[] tracks = api.tracks.listByArtist(TEST_ARTIST_ID, TEST_COUNTRY_CODE);
     assertTracksValid(tracks);
   }
 
@@ -44,7 +44,7 @@ public final class TidalApiTracksTest {
     final TidalApi api = new TidalApi();
     api.authorize(TidalApiTracksTest.TEST_CLIENT_ID, TidalApiTracksTest.TEST_CLIENT_SECRET);
 
-    final Track[] tracks = api.tracks.listByIsrc(TEST_ISRC, TEST_COUNTRY_CODE);
+    final TidalTrack[] tracks = api.tracks.listByIsrc(TEST_ISRC, TEST_COUNTRY_CODE);
     assertTracksValid(tracks);
   }
 
@@ -54,7 +54,7 @@ public final class TidalApiTracksTest {
     final TidalApi api = new TidalApi();
     api.authorize(TidalApiTracksTest.TEST_CLIENT_ID, TidalApiTracksTest.TEST_CLIENT_SECRET);
 
-    final Track[] tracks = api.tracks.listSimilar(TEST_TRACK_ID, TEST_COUNTRY_CODE);
+    final TidalTrack[] tracks = api.tracks.listSimilar(TEST_TRACK_ID, TEST_COUNTRY_CODE);
     assertTracksValid(tracks);
   }
 
@@ -64,25 +64,25 @@ public final class TidalApiTracksTest {
     final TidalApi api = new TidalApi();
     api.authorize(TidalApiTracksTest.TEST_CLIENT_ID, TidalApiTracksTest.TEST_CLIENT_SECRET);
 
-    final Track track = api.tracks.get(TEST_TRACK_ID, TEST_COUNTRY_CODE);
+    final TidalTrack track = api.tracks.get(TEST_TRACK_ID, TEST_COUNTRY_CODE);
     assertTrackValid(track);
   }
 
-  private void assertTracksValid(Track[] tracks) {
-    assertInstanceOf(Track[].class, tracks);
+  private void assertTracksValid(TidalTrack[] tracks) {
+    assertInstanceOf(TidalTrack[].class, tracks);
 
-    for (Track track : tracks) {
+    for (TidalTrack track : tracks) {
       assertTrackValid(track);
     }
   }
 
-  private void assertTrackValid(Track track) {
-    assertInstanceOf(Track.class, track);
+  private void assertTrackValid(TidalTrack track) {
+    assertInstanceOf(TidalTrack.class, track);
     assertInstanceOf(String.class, track.getId());
     assertInstanceOf(String.class, track.getTitle());
     assertTrue(track.getDurationSeconds() > 0);
-    assertInstanceOf(SimpleAlbum.class, track.getAlbum());
-    assertInstanceOf(SimpleArtist[].class, track.getArtists());
+    assertInstanceOf(TidalSimpleAlbum.class, track.getAlbum());
+    assertInstanceOf(TidalSimpleArtist[].class, track.getArtists());
   }
 
   /**

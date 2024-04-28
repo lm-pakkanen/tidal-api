@@ -3,7 +3,7 @@ package io.github.lm_pakkanen.tidal_api;
 import io.github.lm_pakkanen.tidal_api.controllers.endpoints.AuthorizationController;
 import io.github.lm_pakkanen.tidal_api.controllers.endpoints.TracksController;
 import io.github.lm_pakkanen.tidal_api.models.CredentialsStore;
-import io.github.lm_pakkanen.tidal_api.models.entities.Credentials;
+import io.github.lm_pakkanen.tidal_api.models.entities.TidalCredentials;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.InvalidCredentialsException;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.UnauthorizedException;
 
@@ -61,7 +61,7 @@ public final class TidalApi {
    */
   public void authorize(String clientId, String clientSecret, boolean force)
       throws InvalidCredentialsException, UnauthorizedException {
-    final Credentials currentCredentials = AuthorizationController.getCredentialsOrNull();
+    final TidalCredentials currentCredentials = AuthorizationController.getCredentialsOrNull();
 
     if (currentCredentials == null || force) {
       credentialsStore.setCredentials(this.authorizationController.authorize(clientId, clientSecret));

@@ -2,9 +2,9 @@ package io.github.lm_pakkanen.tidal_api.controllers.endpoints;
 
 import java.util.Base64;
 
-import io.github.lm_pakkanen.tidal_api.models.tidal_responses.TidalAuthorizationResponse;
+import io.github.lm_pakkanen.tidal_api.models.tidal_responses.AuthorizationResponse;
 import io.github.lm_pakkanen.tidal_api.models.CredentialsStore;
-import io.github.lm_pakkanen.tidal_api.models.entities.Credentials;
+import io.github.lm_pakkanen.tidal_api.models.entities.TidalCredentials;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.InvalidCredentialsException;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.QueryException;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.UnauthorizedException;
@@ -25,11 +25,11 @@ public final class AuthorizationController extends BaseEndpointController {
    * @throws InvalidCredentialsException
    * @throws UnauthorizedException
    */
-  public static Credentials tryGetCredentials()
+  public static TidalCredentials tryGetCredentials()
       throws InvalidCredentialsException, UnauthorizedException {
 
     final CredentialsStore credentialsStore = CredentialsStore.getInstance();
-    final Credentials credentials = credentialsStore.getCredentials();
+    final TidalCredentials credentials = credentialsStore.getCredentials();
 
     if (credentials == null) {
       throw new InvalidCredentialsException();
@@ -54,7 +54,7 @@ public final class AuthorizationController extends BaseEndpointController {
    * 
    * @return credentials or null.
    */
-  public static Credentials getCredentialsOrNull() {
+  public static TidalCredentials getCredentialsOrNull() {
     final CredentialsStore credentialsStore = CredentialsStore.getInstance();
     return credentialsStore.getCredentials();
   }
@@ -70,7 +70,7 @@ public final class AuthorizationController extends BaseEndpointController {
    * @throws InvalidCredentialsException
    * @throws UnauthorizedException
    */
-  public Credentials authorize(String clientId, String clientSecret)
+  public TidalCredentials authorize(String clientId, String clientSecret)
       throws InvalidCredentialsException, UnauthorizedException {
 
     AuthorizationController.validateCredentials(clientId, clientSecret);
@@ -84,9 +84,9 @@ public final class AuthorizationController extends BaseEndpointController {
       query.method(BaseQuery.HttpMethod.POST);
       query.body("grant_type=client_credentials");
 
-      final TidalAuthorizationResponse tidalAuthorizationResponse = query.execute(TidalAuthorizationResponse.class);
+      final AuthorizationResponse tidalAuthorizationResponse = query.execute(AuthorizationResponse.class);
 
-      return new Credentials(tidalAuthorizationResponse);
+      return new TidalCredentials(tidalAuthorizationResponse);
     } catch (QueryException exception) {
       throw new UnauthorizedException();
     }

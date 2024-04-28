@@ -1,6 +1,6 @@
 package io.github.lm_pakkanen.tidal_api.controllers.endpoints;
 
-import io.github.lm_pakkanen.tidal_api.models.entities.Credentials;
+import io.github.lm_pakkanen.tidal_api.models.entities.TidalCredentials;
 
 /**
  * Base class for all endpoint controllers.
@@ -13,7 +13,7 @@ public class BaseEndpointController {
   protected static final String ARTISTS_URL = BaseEndpointController.BASE_URL + "/artists";
   protected static final String TRACKS_URL = BaseEndpointController.BASE_URL + "/tracks";
 
-  public static void tryValidateCredentials(Credentials credentials) throws IllegalStateException {
+  public static void tryValidateCredentials(TidalCredentials credentials) throws IllegalStateException {
     if (credentials == null) {
       throw new IllegalStateException("No credentials found. Please authorize the client first.");
     }

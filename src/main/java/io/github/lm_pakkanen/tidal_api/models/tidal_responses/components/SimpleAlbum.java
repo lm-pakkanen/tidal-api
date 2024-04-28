@@ -1,8 +1,8 @@
 package io.github.lm_pakkanen.tidal_api.models.tidal_responses.components;
 
-public class TidalSimpleAlbum {
+public class SimpleAlbum {
   public String id;
   public String title;
-  public TidalImage[] imageCover;
-  public TidalImage[] videoCover;
+  public Image[] imageCover;
+  public Image[] videoCover;
 }

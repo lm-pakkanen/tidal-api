@@ -3,14 +3,14 @@ package io.github.lm_pakkanen.tidal_api.controllers.endpoints;
 import java.util.List;
 
 import io.github.lm_pakkanen.tidal_api.models.ListQueryResult;
-import io.github.lm_pakkanen.tidal_api.models.entities.Credentials;
-import io.github.lm_pakkanen.tidal_api.models.entities.Track;
+import io.github.lm_pakkanen.tidal_api.models.entities.TidalCredentials;
+import io.github.lm_pakkanen.tidal_api.models.entities.TidalTrack;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.QueryException;
 import io.github.lm_pakkanen.tidal_api.models.queries.BaseQuery;
 import io.github.lm_pakkanen.tidal_api.models.queries.ListQuery;
 import io.github.lm_pakkanen.tidal_api.models.queries.Query;
-import io.github.lm_pakkanen.tidal_api.models.tidal_responses.TidalResourceResponse;
-import io.github.lm_pakkanen.tidal_api.models.tidal_responses.TidalTrackResponse;
+import io.github.lm_pakkanen.tidal_api.models.tidal_responses.ResourceResponse;
+import io.github.lm_pakkanen.tidal_api.models.tidal_responses.TrackResponse;
 
 public final class TracksController extends BaseEndpointController {
 
@@ -18,7 +18,7 @@ public final class TracksController extends BaseEndpointController {
    * @see TracksController#list(String[], String, Integer,
    *      Integer)
    */
-  public Track[] list(String[] trackIds, String countryCode) throws QueryException {
+  public TidalTrack[] list(String[] trackIds, String countryCode) throws QueryException {
     return this.list(trackIds, countryCode, null, null);
   }
 
@@ -26,7 +26,7 @@ public final class TracksController extends BaseEndpointController {
    * @see TracksController#list(String[], String, Integer,
    *      Integer)
    */
-  public Track[] list(String[] trackIds, String countryCode, Integer limit) throws QueryException {
+  public TidalTrack[] list(String[] trackIds, String countryCode, Integer limit) throws QueryException {
     return this.list(trackIds, countryCode, null, limit);
   }
 
@@ -42,7 +42,7 @@ public final class TracksController extends BaseEndpointController {
    *
    * @throws QueryException if there is an error executing the query.
    */
-  public Track[] list(String[] trackIds, String countryCode, Integer offset, Integer limit) throws QueryException {
+  public TidalTrack[] list(String[] trackIds, String countryCode, Integer offset, Integer limit) throws QueryException {
     if (trackIds.length == 0) {
       throw new QueryException("trackIds is empty.");
     }
@@ -51,7 +51,7 @@ public final class TracksController extends BaseEndpointController {
       throw new QueryException("countryCode is required.");
     }
 
-    final Credentials credentials = BaseQuery.tryGetCredentialsOrQueryException();
+    final TidalCredentials credentials = BaseQuery.tryGetCredentialsOrQueryException();
 
     final String trackIdsAsString = String.join(",", trackIds);
 
@@ -69,14 +69,14 @@ public final class TracksController extends BaseEndpointController {
       query = query.limit(limit);
     }
 
-    final ListQueryResult<TidalTrackResponse> listQueryResult = query.execute(TidalTrackResponse.class,
-        TidalTrackResponse.ListResponse.class, "data");
+    final ListQueryResult<TrackResponse> listQueryResult = query.execute(TrackResponse.class,
+        TrackResponse.ListResponse.class, "data");
 
-    final List<TidalTrackResponse> items = listQueryResult.getItems();
-    final Track[] tracks = new Track[items.size()];
+    final List<TrackResponse> items = listQueryResult.getItems();
+    final TidalTrack[] tracks = new TidalTrack[items.size()];
 
     for (int i = 0; i < items.size(); i++) {
-      tracks[i] = new Track(items.get(i));
+      tracks[i] = new TidalTrack(items.get(i));
     }
 
     return tracks;
@@ -86,7 +86,7 @@ public final class TracksController extends BaseEndpointController {
    * @see TracksController#listByArtist(String, String, Integer,
    *      Integer)
    */
-  public Track[] listByArtist(String artistId, String countryCode) throws QueryException {
+  public TidalTrack[] listByArtist(String artistId, String countryCode) throws QueryException {
     return this.listByArtist(artistId, countryCode, null, null);
   }
 
@@ -94,7 +94,7 @@ public final class TracksController extends BaseEndpointController {
    * @see TracksController#listByArtist(String, String, Integer,
    *      Integer)
    */
-  public Track[] listByArtist(String artistId, String countryCode, Integer limit) throws QueryException {
+  public TidalTrack[] listByArtist(String artistId, String countryCode, Integer limit) throws QueryException {
     return this.listByArtist(artistId, countryCode, null, limit);
   }
 
@@ -110,7 +110,7 @@ public final class TracksController extends BaseEndpointController {
    *
    * @throws QueryException if there is an error executing the query.
    */
-  public Track[] listByArtist(String artistId, String countryCode, Integer offset, Integer limit)
+  public TidalTrack[] listByArtist(String artistId, String countryCode, Integer offset, Integer limit)
       throws QueryException {
     if (artistId == null || artistId.isEmpty()) {
       throw new QueryException("artistId is required.");
@@ -120,7 +120,7 @@ public final class TracksController extends BaseEndpointController {
       throw new QueryException("countryCode is required.");
     }
 
-    final Credentials credentials = BaseQuery.tryGetCredentialsOrQueryException();
+    final TidalCredentials credentials = BaseQuery.tryGetCredentialsOrQueryException();
 
     final StringBuilder tracksByArtistUrlBuilder = new StringBuilder();
     tracksByArtistUrlBuilder.append(BaseEndpointController.ARTISTS_URL);
@@ -143,14 +143,14 @@ public final class TracksController extends BaseEndpointController {
       query = query.limit(limit);
     }
 
-    final ListQueryResult<TidalTrackResponse> listQueryResult = query.execute(TidalTrackResponse.class,
-        TidalTrackResponse.ListResponse.class, "data");
+    final ListQueryResult<TrackResponse> listQueryResult = query.execute(TrackResponse.class,
+        TrackResponse.ListResponse.class, "data");
 
-    final List<TidalTrackResponse> items = listQueryResult.getItems();
-    final Track[] tracks = new Track[items.size()];
+    final List<TrackResponse> items = listQueryResult.getItems();
+    final TidalTrack[] tracks = new TidalTrack[items.size()];
 
     for (int i = 0; i < items.size(); i++) {
-      tracks[i] = new Track(items.get(i));
+      tracks[i] = new TidalTrack(items.get(i));
     }
 
     return tracks;
@@ -160,7 +160,7 @@ public final class TracksController extends BaseEndpointController {
    * @see TracksController#listByIsrc(String, String, Integer,
    *      Integer)
    */
-  public Track[] listByIsrc(String isrc, String countryCode) throws QueryException {
+  public TidalTrack[] listByIsrc(String isrc, String countryCode) throws QueryException {
     return this.listByIsrc(isrc, countryCode, null, null);
   }
 
@@ -168,7 +168,7 @@ public final class TracksController extends BaseEndpointController {
    * @see TracksController#listByIsrc(String, String, Integer,
    *      Integer)
    */
-  public Track[] listByIsrc(String isrc, String countryCode, Integer limit) throws QueryException {
+  public TidalTrack[] listByIsrc(String isrc, String countryCode, Integer limit) throws QueryException {
     return this.listByIsrc(isrc, countryCode, null, limit);
   }
 
@@ -184,7 +184,7 @@ public final class TracksController extends BaseEndpointController {
    *
    * @throws QueryException if there is an error executing the query.
    */
-  public Track[] listByIsrc(String isrc, String countryCode, Integer offset, Integer limit)
+  public TidalTrack[] listByIsrc(String isrc, String countryCode, Integer offset, Integer limit)
       throws QueryException {
     if (isrc == null || isrc.isEmpty()) {
       throw new QueryException("ISRC is required.");
@@ -194,7 +194,7 @@ public final class TracksController extends BaseEndpointController {
       throw new QueryException("countryCode is required.");
     }
 
-    final Credentials credentials = BaseQuery.tryGetCredentialsOrQueryException();
+    final TidalCredentials credentials = BaseQuery.tryGetCredentialsOrQueryException();
 
     final StringBuilder tracksByIsrcUrlBuilder = new StringBuilder();
     tracksByIsrcUrlBuilder.append(BaseEndpointController.TRACKS_URL);
@@ -216,14 +216,14 @@ public final class TracksController extends BaseEndpointController {
       query = query.limit(limit);
     }
 
-    final ListQueryResult<TidalTrackResponse> listQueryResult = query.execute(TidalTrackResponse.class,
-        TidalTrackResponse.ListResponse.class, "data");
+    final ListQueryResult<TrackResponse> listQueryResult = query.execute(TrackResponse.class,
+        TrackResponse.ListResponse.class, "data");
 
-    final List<TidalTrackResponse> items = listQueryResult.getItems();
-    final Track[] tracks = new Track[items.size()];
+    final List<TrackResponse> items = listQueryResult.getItems();
+    final TidalTrack[] tracks = new TidalTrack[items.size()];
 
     for (int i = 0; i < items.size(); i++) {
-      tracks[i] = new Track(items.get(i));
+      tracks[i] = new TidalTrack(items.get(i));
     }
 
     return tracks;
@@ -233,7 +233,7 @@ public final class TracksController extends BaseEndpointController {
    * @see TracksController#listSimilar(String, String, Integer,
    *      Integer)
    */
-  public Track[] listSimilar(String trackId, String countryCode) throws QueryException {
+  public TidalTrack[] listSimilar(String trackId, String countryCode) throws QueryException {
     return this.listSimilar(trackId, countryCode, null, null);
   }
 
@@ -241,7 +241,7 @@ public final class TracksController extends BaseEndpointController {
    * @see TracksController#listSimilar(String, String, Integer,
    *      Integer)
    */
-  public Track[] listSimilar(String trackId, String countryCode, Integer limit) throws QueryException {
+  public TidalTrack[] listSimilar(String trackId, String countryCode, Integer limit) throws QueryException {
     return this.listSimilar(trackId, countryCode, null, limit);
   }
 
@@ -257,7 +257,7 @@ public final class TracksController extends BaseEndpointController {
    *
    * @throws QueryException if there is an error executing the query.
    */
-  public Track[] listSimilar(String trackId, String countryCode, Integer offset, Integer limit)
+  public TidalTrack[] listSimilar(String trackId, String countryCode, Integer offset, Integer limit)
       throws QueryException {
     if (trackId == null || trackId.isEmpty()) {
       throw new QueryException("trackId is required.");
@@ -267,7 +267,7 @@ public final class TracksController extends BaseEndpointController {
       throw new QueryException("countryCode is required.");
     }
 
-    final Credentials credentials = BaseQuery.tryGetCredentialsOrQueryException();
+    final TidalCredentials credentials = BaseQuery.tryGetCredentialsOrQueryException();
 
     final StringBuilder similarTracksUrlBuilder = new StringBuilder();
     similarTracksUrlBuilder.append(BaseEndpointController.TRACKS_URL);
@@ -290,8 +290,8 @@ public final class TracksController extends BaseEndpointController {
       query = query.limit(limit);
     }
 
-    final ListQueryResult<TidalResourceResponse> listQueryResult = query.execute(TidalResourceResponse.class,
-        TidalResourceResponse.ListResponse.class, "data");
+    final ListQueryResult<ResourceResponse> listQueryResult = query.execute(ResourceResponse.class,
+        ResourceResponse.ListResponse.class, "data");
 
     final List<String> similarTrackIds = listQueryResult.getItems().stream().map(n -> n.resource.id).toList();
     final String[] similarTrackIdsArray = similarTrackIds.toArray(new String[similarTrackIds.size()]);
@@ -310,7 +310,7 @@ public final class TracksController extends BaseEndpointController {
    * 
    * @throws QueryException if there is an error executing the query.
    */
-  public Track get(String trackId, String countryCode) throws QueryException {
+  public TidalTrack get(String trackId, String countryCode) throws QueryException {
     if (trackId == null || trackId.isEmpty()) {
       throw new QueryException("trackId is required.");
     }
@@ -319,7 +319,7 @@ public final class TracksController extends BaseEndpointController {
       throw new QueryException("countryCode is required.");
     }
 
-    final Credentials credentials = BaseQuery.tryGetCredentialsOrQueryException();
+    final TidalCredentials credentials = BaseQuery.tryGetCredentialsOrQueryException();
 
     final StringBuilder trackUrlBuilder = new StringBuilder();
     trackUrlBuilder.append(BaseEndpointController.TRACKS_URL);
@@ -333,7 +333,7 @@ public final class TracksController extends BaseEndpointController {
         .auth(credentials)
         .parameter("countryCode", countryCode);
 
-    final TidalTrackResponse tidalTrack = query.execute(TidalTrackResponse.class);
-    return new Track(tidalTrack);
+    final TrackResponse tidalTrack = query.execute(TrackResponse.class);
+    return new TidalTrack(tidalTrack);
   }
 }

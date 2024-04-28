@@ -3,7 +3,7 @@ package io.github.lm_pakkanen.tidal_api.models.queries;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import com.fasterxml.jackson.jr.ob.JSON;
-import io.github.lm_pakkanen.tidal_api.models.entities.Credentials;
+import io.github.lm_pakkanen.tidal_api.models.entities.TidalCredentials;
 import io.github.lm_pakkanen.tidal_api.models.exceptions.QueryException;
 
 /**
@@ -42,9 +42,9 @@ public class Query extends BaseQuery {
   }
 
   /**
-   * @see BaseQuery#auth(Credentials)
+   * @see BaseQuery#auth(TidalCredentials)
    */
-  public Query auth(Credentials credentials) throws QueryException {
+  public Query auth(TidalCredentials credentials) throws QueryException {
     super.auth(credentials);
     return this;
   }
