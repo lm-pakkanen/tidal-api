@@ -6,7 +6,7 @@
 
   <groupId>io.github.lm-pakkanen</groupId>
   <artifactId>tidal_api</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <name>tidal_api</name>
   <description></description>
 
