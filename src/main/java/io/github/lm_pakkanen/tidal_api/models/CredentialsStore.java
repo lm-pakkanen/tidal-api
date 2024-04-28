@@ -18,6 +18,10 @@ public final class CredentialsStore {
     return CredentialsStore.INSTANCE;
   }
 
+  public static void destroyInstance() {
+    CredentialsStore.INSTANCE = null;
+  }
+
   public void setCredentials(Credentials credentials) {
     this.credentials = credentials;
   }
