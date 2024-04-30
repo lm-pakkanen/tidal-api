@@ -191,8 +191,6 @@
               <tokenAuth>true</tokenAuth>
             </configuration>
           </plugin>
-
-
         </plugins>
       </build>
     </profile>
