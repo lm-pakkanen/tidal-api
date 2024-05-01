@@ -7,7 +7,7 @@
   <groupId>io.github.lm-pakkanen</groupId>
   <artifactId>tidal_api</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
   <name>Tidal API</name>
   <description>Light-weight wrapper for Tidal's API.</description>
   <url>https://github.com/lm-pakkanen/tidal-api</url>
