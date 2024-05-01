@@ -2,6 +2,9 @@ package io.github.lm_pakkanen.tidal_api.models.entities;
 
 import io.github.lm_pakkanen.tidal_api.models.tidal_responses.TrackResponse;
 
+/**
+ * Represents a track in the Tidal API.
+ */
 public final class TidalTrack {
   private String id;
   private String title;

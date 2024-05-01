@@ -27,27 +27,93 @@ import io.github.lm_pakkanen.tidal_api.models.exceptions.UnauthorizedException;
  * returning the 'HttpURLConnection' object.
  */
 public class BaseQuery {
+  /**
+   * Represents the HTTP connection.
+   */
   protected HttpURLConnection connection;
 
+  /**
+   * Represents the HTTP method.
+   */
   protected BaseQuery.HttpMethod httpMethod;
+
+  /**
+   * Represents the content type.
+   */
   protected BaseQuery.ContentType contentType;
 
+  /**
+   * Represents the base64-encoded basic authentication credentials.
+   */
   protected String basicCredentialsBase64;
+
+  /**
+   * Represents the authentication credentials.
+   */
   protected TidalCredentials credentials;
+
+  /**
+   * Represents the body of the query.
+   */
   protected Object body;
 
+  /**
+   * Represents the query parameters of the query.
+   */
   protected final HashMap<String, Object> queryParameters;
 
+  /**
+   * Represents an HTTP method.
+   */
   public static enum HttpMethod {
-    GET, POST, PUT, DELETE
+
+    /**
+     * Represents the 'GET' HTTP method.
+     */
+    GET,
+
+    /**
+     * Represents the 'POST' HTTP method.
+     */
+    POST,
+
+    /**
+     * Represents the 'PUT' HTTP method.
+     */
+    PUT,
+
+    /**
+     * Represents the 'DELETE' HTTP method.
+     */
+    DELETE
   }
 
+  /**
+   * Represents a content type.
+   * Supports JSON and Tidal JSON content types.
+   */
   public static enum ContentType {
+
+    /**
+     * Represents the JSON content type.
+     */
     JSON("application/json"),
+
+    /**
+     * Represents the Tidal JSON content type.
+     */
     TIDAL_JSON("application/vnd.tidal.v1+json");
 
+    /**
+     * Represents the value of the content type.
+     */
     public final String value;
 
+    /**
+     * Constructs a new 'ContentType' object with the given value.
+     * 
+     * @param value the value of the content type.
+     */
     private ContentType(String value) {
       this.value = value;
     }
@@ -86,13 +152,11 @@ public class BaseQuery {
    * 
    * Utilizes the input stream reader and buffer reader from the parent class.
    * 
-   * @param inputStreamReader input stream reader.
-   * @param bufferedReader    buffer reader.
-   * @param connection        HTTP connection.
+   * @param connection HTTP connection.
    * 
    * @return response as a string.
    * 
-   * @throws IOException
+   * @throws IOException if there is an error reading the response.
    */
   public static String responseToString(
       HttpURLConnection connection) throws IOException {
@@ -200,7 +264,9 @@ public class BaseQuery {
    * Sets the body of the query.
    *
    * @param data the data to be set as the body of the query.
+   * 
    * @return the updated BaseQuery object.
+   * 
    * @throws QueryException if the query is already built.
    */
   protected BaseQuery body(Object data) throws QueryException {
@@ -217,7 +283,10 @@ public class BaseQuery {
    * 
    * @param key   the key of the query parameter.
    * @param value the value of the query parameter.
+   * 
    * @return the updated BaseQuery object.
+   * 
+   * @throws QueryException if the query is already built.
    */
   protected BaseQuery parameter(String key, Object value) throws QueryException {
     if (this.connection != null) {

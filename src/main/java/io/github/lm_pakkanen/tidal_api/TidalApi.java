@@ -14,6 +14,10 @@ public final class TidalApi {
 
   private final CredentialsStore credentialsStore;
   private final AuthorizationController authorizationController;
+
+  /**
+   * Controller for the tracks endpoint.
+   */
   public final TracksController tracks;
 
   /**

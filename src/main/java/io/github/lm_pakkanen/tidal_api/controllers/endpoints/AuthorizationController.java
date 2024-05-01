@@ -17,13 +17,19 @@ import io.github.lm_pakkanen.tidal_api.models.queries.Query;
 public final class AuthorizationController extends BaseEndpointController {
 
   /**
+   * Default constructor.
+   */
+  public AuthorizationController() {
+  }
+
+  /**
    * Tries to get the credentials from the store. If the credentials don't exist
    * or are invalid/expired, throws an exception.
    * 
    * @return credentials.
    * 
-   * @throws InvalidCredentialsException
-   * @throws UnauthorizedException
+   * @throws InvalidCredentialsException if the credentials are invalid.
+   * @throws UnauthorizedException       if the credentials are expired.
    */
   public static TidalCredentials tryGetCredentials()
       throws InvalidCredentialsException, UnauthorizedException {
@@ -67,8 +73,8 @@ public final class AuthorizationController extends BaseEndpointController {
    * 
    * @return authorized credentials.
    * 
-   * @throws InvalidCredentialsException
-   * @throws UnauthorizedException
+   * @throws InvalidCredentialsException if provided credentials are invalid.
+   * @throws UnauthorizedException       if provided credentials are expired.
    */
   public TidalCredentials authorize(String clientId, String clientSecret)
       throws InvalidCredentialsException, UnauthorizedException {

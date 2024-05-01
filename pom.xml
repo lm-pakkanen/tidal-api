@@ -6,9 +6,33 @@
 
   <groupId>io.github.lm-pakkanen</groupId>
   <artifactId>tidal_api</artifactId>
+  <packaging>jar</packaging>
   <version>0.0.1</version>
-  <name>tidal_api</name>
-  <description></description>
+  <name>Tidal API</name>
+  <description>Light-weight wrapper for Tidal's API.</description>
+  <url>https://github.com/lm-pakkanen/tidal-api</url>
+
+  <developers>
+    <developer>
+      <name>Lauri-Mikael Pakkanen</name>
+      <email>lm.r.pakkanen@gmail.com</email>
+      <organization>-</organization>
+      <organizationUrl>https://github.com/lm-pakkanen</organizationUrl>
+    </developer>
+  </developers>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>http://www.opensource.org/licenses/mit-license.php</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/lm-pakkanen/tidal-api.git</connection>
+    <developerConnection>scm:git:ssh://github.com:lm-pakkanen/tidal-api.git</developerConnection>
+    <url>https://github.com/lm-pakkanen/tidal-api/tree/main</url>
+  </scm>
 
   <properties>
     <java.version>21</java.version>
@@ -21,7 +45,7 @@
     <dependency>
       <groupId>com.fasterxml.jackson.jr</groupId>
       <artifactId>jackson-jr-objects</artifactId>
-      <version>2.13.0</version>
+      <version>2.17.0</version>
     </dependency>
 
     <dependency>
@@ -39,160 +63,89 @@
         <filtering>true</filtering>
       </resource>
     </resources>
+
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.1</version>
+        <version>3.2.5</version>
         <configuration>
           <argLine>-Xshare:off -XX:+EnableDynamicAgentLoading</argLine>
           <parallel>all</parallel>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+        <configuration>
+          <release>21</release>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.3.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.6.3</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>3.2.4</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>3.1.2</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.sonatype.central</groupId>
+        <artifactId>central-publishing-maven-plugin</artifactId>
+        <version>0.4.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <publishingServerId>central</publishingServerId>
+          <tokenAuth>true</tokenAuth>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>snapshot</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-clean-plugin</artifactId>
-            <version>3.1.0</version>
-          </plugin>
-
-          <plugin>
-            <artifactId>maven-resources-plugin</artifactId>
-            <version>3.0.2</version>
-          </plugin>
-
-          <plugin>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.8.0</version>
-          </plugin>
-
-          <plugin>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.22.1</version>
-          </plugin>
-
-          <plugin>
-            <artifactId>maven-jar-plugin</artifactId>
-            <version>3.0.2</version>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>3.6.3</version>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <artifactId>maven-install-plugin</artifactId>
-            <version>2.5.2</version>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>release</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-clean-plugin</artifactId>
-            <version>3.1.0</version>
-          </plugin>
-
-          <plugin>
-            <artifactId>maven-resources-plugin</artifactId>
-            <version>3.0.2</version>
-          </plugin>
-
-          <plugin>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.8.0</version>
-          </plugin>
-
-          <plugin>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.22.1</version>
-          </plugin>
-
-          <plugin>
-            <artifactId>maven-jar-plugin</artifactId>
-            <version>3.0.2</version>
-          </plugin>
-
-          <plugin>
-            <artifactId>maven-install-plugin</artifactId>
-            <version>2.5.2</version>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <version>3.3.0</version>
-            <executions>
-              <execution>
-                <id>attach-sources</id>
-                <goals>
-                  <goal>jar-no-fork</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>3.6.3</version>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.5</version>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
-            <groupId>org.sonatype.central</groupId>
-            <artifactId>central-publishing-maven-plugin</artifactId>
-            <version>0.3.0</version>
-            <extensions>true</extensions>
-            <configuration>
-              <publishingServerId>central</publishingServerId>
-              <tokenAuth>true</tokenAuth>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>

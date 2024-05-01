@@ -18,7 +18,6 @@ public class Query extends BaseQuery {
    * Constructs a new query with the given URL.
    * 
    * @param url the URL to be called.
-   * @throws QueryException
    */
   public Query(String url) {
     super();
@@ -26,7 +25,15 @@ public class Query extends BaseQuery {
   }
 
   /**
+   * Sets the HTTP method of the query.
+   * 
    * @see BaseQuery#method(BaseQuery.HttpMethod)
+   * 
+   * @param httpMethod the HTTP method of the query.
+   * 
+   * @return this instance.
+   * 
+   * @throws QueryException if the HTTP method cannot be set.
    */
   public Query method(BaseQuery.HttpMethod httpMethod) throws QueryException {
     super.method(httpMethod);
@@ -34,7 +41,15 @@ public class Query extends BaseQuery {
   }
 
   /**
+   * Set the content type of the query.
+   * 
    * @see BaseQuery#contentType(BaseQuery.ContentType)
+   * 
+   * @param contentType the content type of the query.
+   * 
+   * @return this instance.
+   * 
+   * @throws QueryException if the content type cannot be set.
    */
   public Query contentType(BaseQuery.ContentType contentType) throws QueryException {
     super.contentType(contentType);
@@ -42,7 +57,15 @@ public class Query extends BaseQuery {
   }
 
   /**
+   * Authenticates the query with the given credentials.
+   * 
    * @see BaseQuery#auth(TidalCredentials)
+   * 
+   * @param credentials the credentials to authenticate the query with.
+   * 
+   * @return this instance.
+   * 
+   * @throws QueryException if the authentication fails.
    */
   public Query auth(TidalCredentials credentials) throws QueryException {
     super.auth(credentials);
@@ -50,7 +73,15 @@ public class Query extends BaseQuery {
   }
 
   /**
+   * Authenticates the query with the given basic credentials.
+   * 
    * @see BaseQuery#auth(String)
+   * 
+   * @param basicCredentialsBase64 the basic credentials in base64 format.
+   * 
+   * @return this instance.
+   * 
+   * @throws QueryException if the authentication fails.
    */
   public Query auth(String basicCredentialsBase64) throws QueryException {
     super.auth(basicCredentialsBase64);
@@ -58,7 +89,15 @@ public class Query extends BaseQuery {
   }
 
   /**
+   * Adds a body to the query.
+   * 
    * @see BaseQuery#body(Object)
+   * 
+   * @param data the body of the query.
+   * 
+   * @return this instance.
+   * 
+   * @throws QueryException if the body cannot be added.
    */
   public Query body(Object data) throws QueryException {
     super.body(data);
@@ -66,7 +105,16 @@ public class Query extends BaseQuery {
   }
 
   /**
+   * Adds a parameter to the query.
+   * 
    * @see BaseQuery#parameter(String, String)
+   * 
+   * @param key   the key of the parameter.
+   * @param value the value of the parameter.
+   * 
+   * @return this instance.
+   * 
+   * @throws QueryException if the parameter cannot be added.
    */
   public Query parameter(String key, String value) throws QueryException {
     super.parameter(key, value);

@@ -26,7 +26,6 @@ public class ListQuery extends BaseQuery {
    * Constructs a new list query with the given URL.
    * 
    * @param url the URL to be called.
-   * @throws QueryException
    */
   public ListQuery(String url) {
     super();
@@ -34,7 +33,15 @@ public class ListQuery extends BaseQuery {
   }
 
   /**
+   * Sets the HTTP method of the query.
+   * 
    * @see BaseQuery#method(BaseQuery.HttpMethod)
+   * 
+   * @param httpMethod the HTTP method of the query.
+   * 
+   * @return this instance.
+   * 
+   * @throws QueryException if the HTTP method cannot be set.
    */
   public ListQuery method(BaseQuery.HttpMethod httpMethod) throws QueryException {
     super.method(httpMethod);
@@ -42,7 +49,15 @@ public class ListQuery extends BaseQuery {
   }
 
   /**
+   * Set the content type of the query.
+   * 
    * @see BaseQuery#contentType(BaseQuery.ContentType)
+   * 
+   * @param contentType the content type of the query.
+   * 
+   * @return this instance.
+   * 
+   * @throws QueryException if the content type cannot be set.
    */
   public ListQuery contentType(BaseQuery.ContentType contentType) throws QueryException {
     super.contentType(contentType);
@@ -50,7 +65,15 @@ public class ListQuery extends BaseQuery {
   }
 
   /**
+   * Authenticates the query with the given credentials.
+   * 
    * @see BaseQuery#auth(TidalCredentials)
+   * 
+   * @param credentials the credentials to authenticate the query with.
+   * 
+   * @return this instance.
+   * 
+   * @throws QueryException if the query cannot be authenticated.
    */
   public ListQuery auth(TidalCredentials credentials) throws QueryException {
     super.auth(credentials);
@@ -58,7 +81,16 @@ public class ListQuery extends BaseQuery {
   }
 
   /**
+   * Authenticates the query with the given basic credentials.
+   * 
    * @see BaseQuery#auth(String)
+   * 
+   * @param basicCredentialsBase64 the basic credentials to authenticate the query
+   *                               with.
+   * 
+   * @return this instance.
+   * 
+   * @throws QueryException if the query cannot be authenticated.
    */
   public ListQuery auth(String basicCredentialsBase64) throws QueryException {
     super.auth(basicCredentialsBase64);
@@ -66,7 +98,15 @@ public class ListQuery extends BaseQuery {
   }
 
   /**
+   * Adds a body to the query.
+   * 
    * @see BaseQuery#body(Object)
+   * 
+   * @param data the body of the query.
+   * 
+   * @return this instance.
+   * 
+   * @throws QueryException if the body cannot be added.
    */
   public ListQuery body(Object data) throws QueryException {
     super.body(data);
@@ -74,7 +114,16 @@ public class ListQuery extends BaseQuery {
   }
 
   /**
+   * Adds a parameter to the query.
+   * 
    * @see BaseQuery#parameter(String, Object)
+   * 
+   * @param key   the name of the parameter.
+   * @param value the value of the parameter.
+   * 
+   * @return this instance.
+   * 
+   * @throws QueryException if the parameter cannot be added.
    */
   public ListQuery parameter(String key, Object value) throws QueryException {
     super.parameter(key, value);
@@ -88,7 +137,10 @@ public class ListQuery extends BaseQuery {
    * without specifying the parameter name.
    * 
    * @param limit the number of items to limit to.
-   * @return the updated ListQuery object.
+   * 
+   * @return this instance.
+   * 
+   * @throws QueryException if the parameter cannot be added.
    */
   public ListQuery limit(int limit) throws QueryException {
     return this.limit("limit", limit);
@@ -98,7 +150,11 @@ public class ListQuery extends BaseQuery {
    * Adds a limit parameter to the query.
    * 
    * @param paramName the name of the parameter, usually 'limit'.
-   * @return the updated ListQuery object.
+   * @param limit     the number of items to limit to.
+   * 
+   * @return this instance.
+   * 
+   * @throws QueryException if the parameter cannot be added.
    */
   public ListQuery limit(String paramName, int limit) throws QueryException {
     this.limitParamName = paramName;
@@ -113,7 +169,10 @@ public class ListQuery extends BaseQuery {
    * without specifying the parameter name.
    * 
    * @param offset the number of items to offset by.
-   * @return the updated ListQuery object.
+   * 
+   * @return this instance.
+   * 
+   * @throws QueryException if the parameter cannot be added.
    */
   public ListQuery offset(int offset) throws QueryException {
     return this.offset("offset", offset);
@@ -123,7 +182,11 @@ public class ListQuery extends BaseQuery {
    * Adds an offset parameter to the query.
    * 
    * @param paramName the name of the parameter, usually 'offset'.
-   * @return the updated ListQuery object.
+   * @param offset    the number of items to offset by.
+   * 
+   * @return this instance.
+   * 
+   * @throws QueryException if the parameter cannot be added.
    */
   public ListQuery offset(String paramName, int offset) throws QueryException {
     this.offsetParamName = paramName;
@@ -153,10 +216,12 @@ public class ListQuery extends BaseQuery {
    * provided model class.
    * 
    * @param <T>            the model class.
+   * @param <TList>        the list model class.
    * @param toBean         the model class.
+   * @param toListBean     the list model class.
    * @param pathInResponse the path in the response to the list of items.
    * 
-   * @return the response as an instance of ListQueryResult<T>. The query result
+   * @return the response as an instance of ListQueryResult. The query result
    *         status is set to FAILURE if the query fails or throws an exception.
    * 
    * @throws QueryException if the query is executed with a null pathInResponse.
@@ -217,6 +282,15 @@ public class ListQuery extends BaseQuery {
     }
   }
 
+  /**
+   * Attempts to get a response from the given input.
+   * 
+   * @param <T>    the model class.
+   * @param toBean the model class.
+   * @param input  the input string.
+   * @return the response as an instance of the model class, or null if the input
+   *         is invalid.
+   */
   private <T> T tryGetResponse(Class<T> toBean, String input) {
     try {
       return JSON.std.beanFrom(toBean, input);

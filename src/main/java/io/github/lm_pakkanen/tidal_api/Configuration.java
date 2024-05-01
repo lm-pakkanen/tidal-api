@@ -32,7 +32,7 @@ public final class Configuration {
   /**
    * Gets the instance of the Configuration.
    * 
-   * @return
+   * @return the instance of the Configuration.
    */
   public static Configuration getInstance() {
     try {
